@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StructWriter.h"
-#include <sstream>
 #include "VariableWriter.h"
+#include <sstream>
 
 StructWriter::StructWriter()
 {

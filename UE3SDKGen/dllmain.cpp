@@ -1,7 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
 #include "CodeWriter.h"
-
+#include "GameSpecific\RocketLeague.h"
 int main() {
 	CodeWriter* cw = new CodeWriter("test.cpp");
 	Class curClass;

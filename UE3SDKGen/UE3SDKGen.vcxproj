@@ -144,17 +144,21 @@
     <ClInclude Include="CodeWriter.h" />
     <ClInclude Include="ConstWriter.h" />
     <ClInclude Include="EnumWriter.h" />
+    <ClInclude Include="GameSpecific\RocketLeague.h" />
+    <ClInclude Include="gamespecific\unrealclasses.h" />
     <ClInclude Include="HeaderWriter.h" />
     <ClInclude Include="IndentationWriter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StructWriter.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="UnrealClasses.h" />
     <ClInclude Include="VariableWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CodeWriter.cpp" />
     <ClCompile Include="ConstWriter.cpp" />
     <ClCompile Include="EnumWriter.cpp" />
+    <ClCompile Include="GameSpecific\UnrealClasses.cpp" />
     <ClCompile Include="HeaderWriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -179,6 +183,8 @@
     </ClCompile>
     <ClCompile Include="StructWriter.cpp" />
     <ClCompile Include="UE3SDKGen.cpp" />
+    <ClCompile Include="UnrealClasses.cpp" />
+    <ClCompile Include="UObjectImpl.cpp" />
     <ClCompile Include="VariableWriter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
