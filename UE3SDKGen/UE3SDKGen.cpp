@@ -15,6 +15,13 @@
 #define ERRORLOG Log().Get(logERROR)
 extern HMODULE module;
 
+struct Property {
+	UClass* static_class;
+	Property_Type type;
+	char type_name;
+	char size;
+};
+
 enum Property_Type {
 	Type_Byte,
 	Type_Int,
@@ -32,9 +39,29 @@ enum Property_Type {
 	Type_Unknown
 };
 
+static vector<Property> properties = 
+{
+	{},
+};
+
+
+
 void destruct() {
 	FreeLibraryAndExitThread(module, EXIT_SUCCESS);
 	exit(-1);
+}
+
+bool SortProperty(UProperty* pPropertyA, UProperty* pPropertyB)
+{
+	if
+		(
+			pPropertyA->Offset == pPropertyB->Offset
+			&&	pPropertyA->IsA(UBoolProperty::StaticClass())
+			&& pPropertyB->IsA(UBoolProperty::StaticClass())
+			)
+		return (((UBoolProperty*)pPropertyA)->BitMask < ((UBoolProperty*)pPropertyB)->BitMask);
+	else
+		return (pPropertyA->Offset < pPropertyB->Offset);
 }
 
 Property_Type GetPropertyType(UProperty* prop) {
@@ -128,8 +155,8 @@ void initMemoryLocations() {
 	}
 	DEBUG << "GNames found at 0x" << std::hex << GNames << std::dec;
 }
-vector<string> structsProcessed;
-vector<Struct> structsFound;
+
+
 
 UScriptStruct* findBiggestScriptStruct(string scriptStructName) {
 	unsigned long biggestSize = -1;
@@ -148,7 +175,41 @@ UScriptStruct* findBiggestScriptStruct(string scriptStructName) {
 	return biggestStruct;
 }
 
+void saveStruct(UScriptStruct* scriptStruct) {
+	Struct s;
+	s.name = string(scriptStruct->GetNameCPP());
+
+	if (scriptStruct->SuperField != NULL && scriptStruct->SuperField != scriptStruct) {
+		s.parentName = string(scriptStruct->SuperField->GetNameCPP());
+	}
+
+	vector< UProperty* > propertyList;
+	for (UProperty* pProperty = (UProperty*)scriptStruct->Children; pProperty; pProperty = (UProperty*)pProperty->Next)
+	{
+		if(pProperty->ElementSize > 0 && !pProperty->IsA(UScriptStruct::StaticClass()))
+			propertyList.push_back(pProperty);
+	}
+	sort(propertyList.begin(), propertyList.end(), SortProperty);
+
+	for (unsigned int i = 0; i < propertyList.size(); i++) {
+		UProperty* prop = propertyList.at(i);
+		Property_Type propType = GetPropertyType(prop);
+		Variable var;
+		var.name = string(prop->GetName());
+		var.size = prop->ArrayDim;
+		var.type = GetPropertyTypeName(propType);
+		if (propType != Type_Unknown) { 
+			string name = string(prop->GetName());
+		}
+		else { //filler
+
+		}
+	}
+}
+
+vector<Struct> structsFound;
 void getStructs(UScriptStruct* ss, UObject* processPackage) {
+	static vector<string> structsProcessed;
 	UObject* package = ss->GetPackageObj();
 	if (package == NULL || package != processPackage)
 		return;
@@ -162,11 +223,7 @@ void getStructs(UScriptStruct* ss, UObject* processPackage) {
 	if (ss->SuperField != NULL && ss->SuperField != ss && ss->SuperField->IsA(UScriptStruct::StaticClass()))
 	{
 		UScriptStruct* superStruct = (UScriptStruct*)ss->SuperField;
-		string superName = string(superStruct->GetFullName());
-		if (find(structsProcessed.begin(), structsProcessed.end(), superName) == structsProcessed.end())
-		{
-			getStructs(superStruct, processPackage);
-		}
+		getStructs(superStruct, processPackage);
 	}
 
 	for (UProperty* structProperty = (UProperty*)ss->Children; structProperty; structProperty = (UProperty*)structProperty->Next)
@@ -174,7 +231,7 @@ void getStructs(UScriptStruct* ss, UObject* processPackage) {
 		Property_Type type = GetPropertyType(structProperty);
 		if (type == Type_UStruct) {
 			UScriptStruct* scriptStruct = (UScriptStruct*)(((UStructProperty*)structProperty)->Struct);
-			if (ss != scriptStruct && (find(structsProcessed.begin(), structsProcessed.end(), string(scriptStruct->GetFullName())) == structsProcessed.end())) {
+			if (ss != scriptStruct) {
 				getStructs(scriptStruct, processPackage);
 			}
 		}
@@ -183,12 +240,14 @@ void getStructs(UScriptStruct* ss, UObject* processPackage) {
 			UArrayProperty* arrayProp = (UArrayProperty*)structProperty;
 			if (GetPropertyType(arrayProp->Inner) == Type_UStruct) {
 				UScriptStruct* innerStruct = (UScriptStruct*)((UStructProperty*)arrayProp->Inner)->Struct;
-				if (innerStruct == ss && find(structsProcessed.begin(), structsProcessed.end(), string(innerStruct->GetFullName())) == structsProcessed.end()) {
+				if (innerStruct != ss) {
 					getStructs(innerStruct, processPackage);
 				}
 			}
 		}
 	}
+	saveStruct(ss);
+	structsProcessed.push_back(scriptStructName);
 }
 
 vector<Struct> extractStructs(UObject* processPackage) {

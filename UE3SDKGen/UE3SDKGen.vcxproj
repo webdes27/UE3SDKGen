@@ -141,6 +141,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code.h" />
     <ClInclude Include="CodeWriter.h" />
     <ClInclude Include="ConstWriter.h" />
     <ClInclude Include="EnumWriter.h" />

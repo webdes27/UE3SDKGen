@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Unreal">
+      <UniqueIdentifier>{4749451b-1543-498a-b84f-b1aee6f686c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CodeGenerator">
+      <UniqueIdentifier>{1af9333e-88a4-4ad7-a983-1a697f13c08f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,33 +30,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CodeWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StructWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IndentationWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HeaderWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VariableWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameSpecific\RocketLeague.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gamespecific\unrealclasses.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HackHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -59,6 +38,36 @@
     </ClInclude>
     <ClInclude Include="UE3SDKGen.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSpecific\RocketLeague.h">
+      <Filter>Unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="gamespecific\unrealclasses.h">
+      <Filter>Unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="VariableWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="StructWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="IndentationWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="HeaderWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="CodeWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code.h">
+      <Filter>CodeGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -71,32 +80,32 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameSpecific\UnrealClasses.cpp">
+      <Filter>Unreal</Filter>
+    </ClCompile>
     <ClCompile Include="CodeWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StructWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IndentationWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HeaderWriter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>CodeGenerator</Filter>
     </ClCompile>
     <ClCompile Include="ConstWriter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>CodeGenerator</Filter>
     </ClCompile>
     <ClCompile Include="EnumWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VariableWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSpecific\UnrealClasses.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>CodeGenerator</Filter>
     </ClCompile>
     <ClCompile Include="HackHelpers.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>CodeGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="HeaderWriter.cpp">
+      <Filter>CodeGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="IndentationWriter.cpp">
+      <Filter>CodeGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="StructWriter.cpp">
+      <Filter>CodeGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="VariableWriter.cpp">
+      <Filter>CodeGenerator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
