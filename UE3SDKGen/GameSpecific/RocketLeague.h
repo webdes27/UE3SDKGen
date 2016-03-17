@@ -10,8 +10,7 @@
 
 #define CLASS_ALIGN		0x4 //4 bytez
 
-//typedefs
-typedef int NAME_INDEX;
+
 
 //Unreal Engine signatures
 #define CallFunction_Pattern	"\x55\x8D\xAC\x24\x00\x00\x00\x00\x81\xEC\x00\x00\x00\x00"
@@ -31,8 +30,7 @@ typedef int NAME_INDEX;
 #define GNames_Offset			0x2
 
 //Rest should be untouched?
-unsigned long GObjects  = NULL;
-unsigned long GNames	= NULL;
+
 
 
 // Function flags

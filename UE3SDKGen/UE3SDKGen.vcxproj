@@ -26,7 +26,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;UE3SDKGEN_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -146,12 +146,14 @@
     <ClInclude Include="EnumWriter.h" />
     <ClInclude Include="GameSpecific\RocketLeague.h" />
     <ClInclude Include="gamespecific\unrealclasses.h" />
+    <ClInclude Include="HackHelpers.h" />
     <ClInclude Include="HeaderWriter.h" />
     <ClInclude Include="IndentationWriter.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StructWriter.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UnrealClasses.h" />
+    <ClInclude Include="UE3SDKGen.h" />
     <ClInclude Include="VariableWriter.h" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +161,7 @@
     <ClCompile Include="ConstWriter.cpp" />
     <ClCompile Include="EnumWriter.cpp" />
     <ClCompile Include="GameSpecific\UnrealClasses.cpp" />
+    <ClCompile Include="HackHelpers.cpp" />
     <ClCompile Include="HeaderWriter.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -183,8 +186,6 @@
     </ClCompile>
     <ClCompile Include="StructWriter.cpp" />
     <ClCompile Include="UE3SDKGen.cpp" />
-    <ClCompile Include="UnrealClasses.cpp" />
-    <ClCompile Include="UObjectImpl.cpp" />
     <ClCompile Include="VariableWriter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

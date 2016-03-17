@@ -1,8 +1,20 @@
 #include "..\stdafx.h"
 #pragma once
+
+#ifdef _MSC_VER
+#pragma pack ( push, 0x4 )
+#endif
+
+extern unsigned long GObjects;
+extern unsigned long GNames;
+
+//typedefs
+typedef int NAME_INDEX;
 typedef void* FPointer;
 typedef unsigned __int64	QWORD;
 class UObject;
+
+
 
 /*
 # ========================================================================================= #
@@ -24,12 +36,6 @@ public:
 		Count = Max = 0;
 	};
 
-public:
-	int Num()
-	{
-		return this->Count;
-	};
-
 	T& operator() (int i)
 	{
 		return this->Data[i];
@@ -38,6 +44,11 @@ public:
 	const T& operator() (int i) const
 	{
 		return this->Data[i];
+	};
+
+	unsigned int Num()
+	{
+		return this->Count;
 	};
 
 	void Add(T InputData)
@@ -649,26 +660,6 @@ public:
 };
 
 
-UClass*			UObject::pClassPointer = NULL;
-UClass*			UField::pClassPointer = NULL;
-UClass*			UEnum::pClassPointer = NULL;
-UClass*			UConst::pClassPointer = NULL;
-UClass*			UStruct::pClassPointer = NULL;
-UClass*			UScriptStruct::pClassPointer = NULL;
-UClass*			UFunction::pClassPointer = NULL;
-UClass*			UState::pClassPointer = NULL;
-UClass*			UClass::pClassPointer = NULL;
-UClass*			UProperty::pClassPointer = NULL;
-UClass*			UByteProperty::pClassPointer = NULL;
-UClass*			UIntProperty::pClassPointer = NULL;
-UClass*			UFloatProperty::pClassPointer = NULL;
-UClass*			UBoolProperty::pClassPointer = NULL;
-UClass*			UStrProperty::pClassPointer = NULL;
-UClass*			UNameProperty::pClassPointer = NULL;
-UClass*			UDelegateProperty::pClassPointer = NULL;
-UClass*			UObjectProperty::pClassPointer = NULL;
-UClass*			UClassProperty::pClassPointer = NULL;
-UClass*			UInterfaceProperty::pClassPointer = NULL;
-UClass*			UStructProperty::pClassPointer = NULL;
-UClass*			UArrayProperty::pClassPointer = NULL;
-UClass*			UMapProperty::pClassPointer = NULL;
+#ifdef _MSC_VER
+#pragma pack ( pop )
+#endif

@@ -48,10 +48,16 @@
     <ClInclude Include="GameSpecific\RocketLeague.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnrealClasses.h">
+    <ClInclude Include="gamespecific\unrealclasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gamespecific\unrealclasses.h">
+    <ClInclude Include="HackHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UE3SDKGen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,13 +92,10 @@
     <ClCompile Include="VariableWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UObjectImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UnrealClasses.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameSpecific\UnrealClasses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HackHelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
