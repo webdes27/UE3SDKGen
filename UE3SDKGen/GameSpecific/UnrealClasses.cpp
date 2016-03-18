@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UnrealClasses.h"
 
+
 unsigned long GObjects = NULL;
 unsigned long GNames = NULL;
 
@@ -237,3 +238,4 @@ UClass*			UInterfaceProperty::pClassPointer = NULL;
 UClass*			UStructProperty::pClassPointer = NULL;
 UClass*			UArrayProperty::pClassPointer = NULL;
 UClass*			UMapProperty::pClassPointer = NULL;
+

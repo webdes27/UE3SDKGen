@@ -1,8 +1,12 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
-#include "CodeWriter.h"
+#include <iostream>
+#include <fstream>
+
+
+using namespace std;
+
 #include "UE3SDKGen.h"
-#include "GameSpecific\RocketLeague.h"
 //int main() {
 //	CodeWriter* cw = new CodeWriter("test.cpp");
 //	Class curClass;
@@ -38,7 +42,7 @@
 HMODULE module;
 
 void OnAttach() {
-	Run(module);
+	//Run(module);
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -46,11 +50,17 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
 					 )
 {
+
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH: 
 	{
 		module = hModule;
+		ofstream myfile;
+		myfile.open("example.txt");
+		myfile << "Writing this to a file.\n";
+		myfile.close();
+
 		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)OnAttach, NULL, 0, NULL);
 		
 	}

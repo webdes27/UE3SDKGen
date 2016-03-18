@@ -9,18 +9,14 @@
 #include <functional>
 #include <algorithm>
 #include <map>
-#define DEBUG Log().Get(logDEBUG)
+
+#define DEBUGLOG Log().Get(logDEBUG)
 #define INFOLOG Log().Get(logINFO)
 #define WARNLOG Log().Get(logWARN)
 #define ERRORLOG Log().Get(logERROR)
 extern HMODULE module;
 
-struct Property {
-	UClass* static_class;
-	Property_Type type;
-	char type_name;
-	char size;
-};
+
 
 enum Property_Type {
 	Type_Byte,
@@ -39,9 +35,29 @@ enum Property_Type {
 	Type_Unknown
 };
 
+struct Property {
+	UClass* static_class;
+	Property_Type type;
+	string type_name;
+	unsigned long size;
+};
+
 static vector<Property> properties = 
 {
-	{},
+	{ UByteProperty::StaticClass(), Type_Byte, "unsigned char", sizeof(unsigned char) },
+	{ UIntProperty::StaticClass(), Type_Int, "int", sizeof(unsigned int) },
+	{ UFloatProperty::StaticClass(), Type_Float, "float", sizeof(float) },
+	{ UBoolProperty::StaticClass(), Type_Bool, "bool", sizeof(bool) },
+	{ UStrProperty::StaticClass(), Type_UString, "struct FString", sizeof(FString) },
+	{ UNameProperty::StaticClass(), Type_UName, "struct FName", sizeof(FName) },
+	{ UDelegateProperty::StaticClass(), Type_UDelegate, "struct FScriptDelegate", sizeof(FScriptDelegate) },
+	{ UObjectProperty::StaticClass(), Type_UObject, "", sizeof(void*) },
+	{ UClassProperty::StaticClass(), Type_UClass, "", sizeof(void*) },
+	{ UInterfaceProperty::StaticClass(), Type_UInterface, "", sizeof(void*) },
+	{ UStructProperty::StaticClass(), Type_UStruct, "", 0 },
+	{ UArrayProperty::StaticClass(), Type_UArray, "", sizeof(TArray<void*>) },
+	{ UMapProperty::StaticClass(), Type_UMap, "", 0x3C },
+	{ NULL, Type_Unknown, "ERROR", 0x0 },
 };
 
 
@@ -64,60 +80,84 @@ bool SortProperty(UProperty* pPropertyA, UProperty* pPropertyB)
 		return (pPropertyA->Offset < pPropertyB->Offset);
 }
 
-Property_Type GetPropertyType(UProperty* prop) {
-	static map<UClass*, Property_Type> types = 
-	{
-		{ UByteProperty::StaticClass(), Type_Byte },
-		{ UIntProperty::StaticClass(), Type_Int },
-		{ UFloatProperty::StaticClass(), Type_Float },
-		{ UBoolProperty::StaticClass(), Type_Bool },
-		{ UStrProperty::StaticClass(), Type_UString },
-		{ UNameProperty::StaticClass(), Type_UName },
-		{ UDelegateProperty::StaticClass(), Type_UDelegate },
-		{ UObjectProperty::StaticClass(), Type_UObject },
-		{ UClassProperty::StaticClass(), Type_UClass },
-		{ UInterfaceProperty::StaticClass(), Type_UInterface },
-		{ UStructProperty::StaticClass(), Type_UStruct },
-		{ UArrayProperty::StaticClass(), Type_UArray },
-		{ UMapProperty::StaticClass(), Type_UMap },
-	};
+Property GetProperty(Property_Type prop) {
+	for (unsigned int i = 0; i < properties.size(); i++) {
+		Property tempProp = properties.at(i);
+		if (tempProp.type == prop) {
+			return tempProp;
+		}
+	}
+	return GetProperty(Type_Unknown);
+}
 
-	typedef std::map<UClass*, Property_Type>::iterator it_type;
-	for (it_type iterator = types.begin(); iterator != types.end(); iterator++) {
-		if (prop->IsA(iterator->first)) {
-			return iterator->second;
+Property GetProperty(UProperty* prop) {
+	for (unsigned int i = 0; i < properties.size(); i++) {
+		Property tempProp = properties.at(i);
+		if (prop->IsA(tempProp.static_class)) {
+			return tempProp;
+		}
+	}
+	return GetProperty(Type_Unknown);
+}
+
+Property_Type GetPropertyType(UProperty* uProp) {
+	for (unsigned int i = 0; i < properties.size(); i++) {
+		Property prop = properties.at(i);
+		if (uProp->IsA(prop.static_class)) {
+			return prop.type;
 		}
 	}
 	return Type_Unknown;
 }
 
-unsigned long GetPropertySize(Property_Type pType) {
-	static map<Property_Type, unsigned long> sizes =
+string GetPropertyTypeName(UProperty* uProp) {
+	Property_Type type = GetPropertyType(uProp);
+	switch (type) {
+	case Type_UObject:
+		return "class " + (string(((UObjectProperty*)uProp)->PropertyClass->GetNameCPP())) + "*";
+		break;
+	case Type_UClass:
+		return "class " + string(((UClassProperty*)uProp)->MetaClass->GetNameCPP()) + "*";
+		break;
+	case Type_UInterface:
+		return "class " + string(((UInterfaceProperty*)uProp)->InterfaceClass->GetNameCPP()) + "*";
+		break;
+	case Type_UStruct:
+		return "struct " + string(((UStructProperty*)uProp)->Struct->GetNameCPP());
+		break;
+	case Type_UArray:
 	{
-		{ Type_Byte, sizeof(unsigned char) },
-		{ Type_Int, sizeof(unsigned int) },
-		{ Type_Float, sizeof(float) },
-		{ Type_Bool, sizeof(bool) },
-		{ Type_UString, sizeof(FString) },
-		{ Type_UName, sizeof(FName) },
-		{ Type_UDelegate, sizeof(FScriptDelegate) },
-		{ Type_UObject, sizeof(void*) },
-		{ Type_UClass, sizeof(void*) },
-		{ Type_UInterface, sizeof(void*) },
-		{ Type_UStruct, 0 },
-		{ Type_UArray, sizeof(TArray<void*>) },
-		{ Type_UMap, 0x3C }
-	};
-	return sizes[pType];
+		UProperty* innerProp = ((UArrayProperty*)uProp)->Inner;
+		Property_Type innerPropType = GetPropertyType(innerProp);
+		if (innerPropType != Type_Unknown) {
+			string innerPropName = GetPropertyTypeName(innerProp);
+			return "TArray<" + innerPropName + ">";
+		}
+		else {
+			return "ERROR_TARRAY";
+		}
+		break;
+	}
+	case Type_UMap:
+	{
+		UMapProperty* mapProp = (UMapProperty*)uProp;
+		string keyName = GetPropertyTypeName(mapProp->Key);
+		string valueName = GetPropertyTypeName(mapProp->Value);
+		return "TMap<" + keyName + ", " + valueName + ">";
+		break;
+	}
+	default:
+		return GetProperty(uProp).type_name;
+		break;
+	}
 }
 
-unsigned long GetPropertySize(UProperty* prop)
-{
-	Property_Type propType = GetPropertyType(prop);
-	if (propType == Type_UStruct) {
-		return prop->ElementSize;
+unsigned long GetPropertySize(UProperty* uProp) {
+	Property_Type type = GetPropertyType(uProp);
+	if (type == Type_UStruct) {
+		return uProp->ElementSize;
 	}
-	return GetPropertySize(propType);
+	return GetProperty(type).size;
 }
 
 typedef function<bool(UObject*)> filter;
@@ -135,25 +175,25 @@ std::vector<UObject*> filterGObjects(filter f) {
 }
 
 void initMemoryLocations() {
-	DEBUG << "Trying to find address of current module";
+	DEBUGLOG << "Trying to find address of current module";
 	MODULEINFO currentGame = GetModuleInfo(NULL);
-	DEBUG << "Game is at 0x" << currentGame.EntryPoint << ", size " << currentGame.SizeOfImage;
+	DEBUGLOG << "Game is at 0x" << currentGame.EntryPoint << ", size " << currentGame.SizeOfImage;
 
-	DEBUG << "Trying to find GObjects location using pattern.";
+	DEBUGLOG << "Trying to find GObjects location using pattern.";
 	GObjects = *(unsigned long*)FindPattern(currentGame, (unsigned char*)GObjects_Pattern, (char*)GObjects_Mask, GObjects_Offset);
 	if (GObjects == NULL) {
 		ERRORLOG << "Could not find GObjects, check your pattern, mask & offset";
 		destruct();
 	}
-	DEBUG << "GObjects found at 0x" << std::hex << GObjects << std::dec;
+	DEBUGLOG << "GObjects found at 0x" << std::hex << GObjects << std::dec;
 
-	DEBUG << "Trying to find GNames location using pattern.";
+	DEBUGLOG << "Trying to find GNames location using pattern.";
 	GNames = *(unsigned long*)FindPattern(currentGame, (unsigned char*)GNames_Pattern, (char*)GNames_Mask, GNames_Offset);
 	if (GNames == NULL) {
 		ERRORLOG << "Could not find GNames, check your pattern, mask & offset";
 		destruct();
 	}
-	DEBUG << "GNames found at 0x" << std::hex << GNames << std::dec;
+	DEBUGLOG << "GNames found at 0x" << std::hex << GNames << std::dec;
 }
 
 
@@ -175,6 +215,7 @@ UScriptStruct* findBiggestScriptStruct(string scriptStructName) {
 	return biggestStruct;
 }
 
+vector<Struct> structsFound;
 void saveStruct(UScriptStruct* scriptStruct) {
 	Struct s;
 	s.name = string(scriptStruct->GetNameCPP());
@@ -197,17 +238,14 @@ void saveStruct(UScriptStruct* scriptStruct) {
 		Variable var;
 		var.name = string(prop->GetName());
 		var.size = prop->ArrayDim;
-		var.type = GetPropertyTypeName(propType);
-		if (propType != Type_Unknown) { 
-			string name = string(prop->GetName());
-		}
-		else { //filler
-
-		}
+		var.type = GetPropertyTypeName(prop);
+		var.flags |= mod_public;
+		s.variables.push_back(var);
 	}
+	structsFound.push_back(s);
 }
 
-vector<Struct> structsFound;
+
 void getStructs(UScriptStruct* ss, UObject* processPackage) {
 	static vector<string> structsProcessed;
 	UObject* package = ss->GetPackageObj();
@@ -267,7 +305,7 @@ vector<Struct> extractStructs(UObject* processPackage) {
 
 
 void loadPackages() {
-	DEBUG << "Starting on processing packages.";
+	DEBUGLOG << "Starting on processing packages.";
 
 	vector<UObject*> filteredPackages = filterGObjects([](UObject* obj) {
 		return obj != NULL && obj->IsA(UClass::StaticClass()) && obj->GetPackageObj() != NULL;
@@ -280,12 +318,18 @@ void loadPackages() {
 		if (!(find(checkedPackages.begin(), checkedPackages.end(), package) == checkedPackages.end()))
 			continue;
 
-		DEBUG << "Found package " << package->GetName() << ". Starting processing.";
+		DEBUGLOG << "Found package " << package->GetName() << ". Starting processing.";
 		//extractStructs(package);
-		DEBUG << "Done processing package " << package->GetName() << ". ";
+		//CodeWriter cw(package->GetName());
+		//Class c;
+		//c.structs.insert(c.structs.end(), structsFound.begin(), structsFound.end());
+		//cw.AddClass(c);
+		//cw.Save();
+
+		DEBUGLOG << "Done processing package " << package->GetName() << ". ";
 		checkedPackages.push_back(package);
 	}
-	DEBUG << "Packages processed.";
+	DEBUGLOG << "Packages processed.";
 }
 
 void Run(HMODULE mod) {
