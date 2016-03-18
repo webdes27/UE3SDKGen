@@ -14,7 +14,6 @@
 #define INFOLOG Log().Get(logINFO)
 #define WARNLOG Log().Get(logWARN)
 #define ERRORLOG Log().Get(logERROR)
-extern HMODULE module;
 
 
 
@@ -42,28 +41,12 @@ struct Property {
 	unsigned long size;
 };
 
-static vector<Property> properties = 
-{
-	{ UByteProperty::StaticClass(), Type_Byte, "unsigned char", sizeof(unsigned char) },
-	{ UIntProperty::StaticClass(), Type_Int, "int", sizeof(unsigned int) },
-	{ UFloatProperty::StaticClass(), Type_Float, "float", sizeof(float) },
-	{ UBoolProperty::StaticClass(), Type_Bool, "bool", sizeof(bool) },
-	{ UStrProperty::StaticClass(), Type_UString, "struct FString", sizeof(FString) },
-	{ UNameProperty::StaticClass(), Type_UName, "struct FName", sizeof(FName) },
-	{ UDelegateProperty::StaticClass(), Type_UDelegate, "struct FScriptDelegate", sizeof(FScriptDelegate) },
-	{ UObjectProperty::StaticClass(), Type_UObject, "", sizeof(void*) },
-	{ UClassProperty::StaticClass(), Type_UClass, "", sizeof(void*) },
-	{ UInterfaceProperty::StaticClass(), Type_UInterface, "", sizeof(void*) },
-	{ UStructProperty::StaticClass(), Type_UStruct, "", 0 },
-	{ UArrayProperty::StaticClass(), Type_UArray, "", sizeof(TArray<void*>) },
-	{ UMapProperty::StaticClass(), Type_UMap, "", 0x3C },
-	{ NULL, Type_Unknown, "ERROR", 0x0 },
-};
+static vector<Property> properties;
 
-
+HMODULE gameModule;
 
 void destruct() {
-	FreeLibraryAndExitThread(module, EXIT_SUCCESS);
+	FreeLibraryAndExitThread(gameModule, EXIT_SUCCESS);
 	exit(-1);
 }
 
@@ -319,12 +302,12 @@ void loadPackages() {
 			continue;
 
 		DEBUGLOG << "Found package " << package->GetName() << ". Starting processing.";
-		//extractStructs(package);
-		//CodeWriter cw(package->GetName());
-		//Class c;
-		//c.structs.insert(c.structs.end(), structsFound.begin(), structsFound.end());
-		//cw.AddClass(c);
-		//cw.Save();
+		extractStructs(package);
+		CodeWriter cw(package->GetName());
+		Class c;
+		c.structs.insert(c.structs.end(), structsFound.begin(), structsFound.end());
+		cw.AddClass(c);
+		cw.Save();
 
 		DEBUGLOG << "Done processing package " << package->GetName() << ". ";
 		checkedPackages.push_back(package);
@@ -332,9 +315,30 @@ void loadPackages() {
 	DEBUGLOG << "Packages processed.";
 }
 
+void initProperties() {
+	properties =
+	{
+		{ UByteProperty::StaticClass(), Type_Byte, "unsigned char", sizeof(unsigned char) },
+		{ UIntProperty::StaticClass(), Type_Int, "int", sizeof(unsigned int) },
+		{ UFloatProperty::StaticClass(), Type_Float, "float", sizeof(float) },
+		{ UBoolProperty::StaticClass(), Type_Bool, "bool", sizeof(bool) },
+		{ UStrProperty::StaticClass(), Type_UString, "struct FString", sizeof(FString) },
+		{ UNameProperty::StaticClass(), Type_UName, "struct FName", sizeof(FName) },
+		{ UDelegateProperty::StaticClass(), Type_UDelegate, "struct FScriptDelegate", sizeof(FScriptDelegate) },
+		{ UObjectProperty::StaticClass(), Type_UObject, "", sizeof(void*) },
+		{ UClassProperty::StaticClass(), Type_UClass, "", sizeof(void*) },
+		{ UInterfaceProperty::StaticClass(), Type_UInterface, "", sizeof(void*) },
+		{ UStructProperty::StaticClass(), Type_UStruct, "", 0 },
+		{ UArrayProperty::StaticClass(), Type_UArray, "", sizeof(TArray<void*>) },
+		{ UMapProperty::StaticClass(), Type_UMap, "", 0x3C },
+		{ NULL, Type_Unknown, "ERROR", 0x0 },
+	};
+}
+
 void Run(HMODULE mod) {
 	Log::ReportingLevel() = logDEBUG4;
-	module = mod;
+	gameModule = mod;
+	initProperties(); //Has to be done here...????
 	initMemoryLocations();
 	loadPackages();
 }

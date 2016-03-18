@@ -1,17 +1,15 @@
-#include "../stdafx.h"
+#include "..\stdafx.h"
 #pragma once
 
-#ifdef _MSC_VER
-#pragma pack ( push, 0x4 )
-#endif
+
 
 extern unsigned long GObjects;
 extern unsigned long GNames;
 
 //typedefs
-typedef int NAME_INDEX;
-typedef void* FPointer;
-typedef unsigned __int64	QWORD;
+//typedef int NAME_INDEX;
+//typedef void* FPointer;
+//typedef unsigned __int64	QWORD;
 class UObject;
 
 
@@ -46,7 +44,7 @@ public:
 		return this->Data[i];
 	};
 
-	unsigned int Num()
+	int Num()
 	{
 		return this->Count;
 	};
@@ -67,15 +65,15 @@ public:
 
 struct FNameEntry
 {
-	NAME_INDEX		Index;
-	QWORD			Flags;
+	int		Index;
+	__int64			Flags;
 	FNameEntry*		HashNext;
 	char			Name[0x10];
 };
 
 struct FName
 {
-	NAME_INDEX		Index;
+	int		Index;
 	unsigned char	unknownData00[0x4];
 
 	FName() : Index(0) {};
@@ -169,7 +167,7 @@ struct FScriptDelegate
 class UObject
 {
 public:
-	FPointer				VfTableObject;							// 0x0000 (0x04)
+	void*				VfTableObject;							// 0x0000 (0x04)
 	char					unknown_data00[0x1c];					// 0x0004 (0x1c)
 	int						ObjectInternalInteger;					// 0x0020 (0x04)
 	char					unknown_data01[0x4];
@@ -336,8 +334,8 @@ public:
 class UState : public UStruct
 {
 public:
-	//QWORD ProbeMask;
-	//QWORD IgnoreMask;
+	//__int64 ProbeMask;
+	//__int64 IgnoreMask;
 	//DWORD StateFlags;
 	//unsigned short LabelTableOffset;
 	//TMap<FName, UFunction*> FuncMap;
@@ -393,7 +391,7 @@ class UProperty : public UField
 public:
 	unsigned long		ArrayDim;									// 0x0040 (0x04)					
 	unsigned long		ElementSize;								// 0x0044 (0x04)
-	QWORD				PropertyFlags;								// 0x0048 (0x08)
+	__int64				PropertyFlags;								// 0x0048 (0x08)
 	unsigned long		PropertySize;
 
 	unsigned char		UnknownData00[0xC];						// 0x0050 (0x10) //fname category?
@@ -660,6 +658,3 @@ public:
 };
 
 
-#ifdef _MSC_VER
-#pragma pack ( pop )
-#endif

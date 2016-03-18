@@ -1,12 +1,8 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
-#include <iostream>
-#include <fstream>
-
-
-using namespace std;
-
 #include "UE3SDKGen.h"
+
+
 //int main() {
 //	CodeWriter* cw = new CodeWriter("test.cpp");
 //	Class curClass;
@@ -41,11 +37,11 @@ using namespace std;
 
 HMODULE module;
 
-void OnAttach() {
-	//Run(module);
+void WINAPI OnAttach() {
+	Run(module);
 }
 
-BOOL APIENTRY DllMain( HMODULE hModule,
+BOOL WINAPI DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
 					 )
@@ -54,16 +50,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH: 
-	{
 		module = hModule;
-		ofstream myfile;
-		myfile.open("example.txt");
-		myfile << "Writing this to a file.\n";
-		myfile.close();
-
 		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)OnAttach, NULL, 0, NULL);
-		
-	}
+		return TRUE;
 		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:

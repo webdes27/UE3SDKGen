@@ -42,9 +42,6 @@
     <ClInclude Include="GameSpecific\RocketLeague.h">
       <Filter>Unreal</Filter>
     </ClInclude>
-    <ClInclude Include="gamespecific\unrealclasses.h">
-      <Filter>Unreal</Filter>
-    </ClInclude>
     <ClInclude Include="VariableWriter.h">
       <Filter>CodeGenerator</Filter>
     </ClInclude>
@@ -68,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="Code.h">
       <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="gamespecific\unrealclasses.h">
+      <Filter>Unreal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
