@@ -15,7 +15,8 @@
 #define WARNLOG Log().Get(logWARN)
 #define ERRORLOG Log().Get(logERROR)
 
-
+extern unsigned long GObjects;
+extern unsigned long GNames;
 
 enum Property_Type {
 	Type_Byte,
@@ -84,6 +85,9 @@ Property GetProperty(UProperty* prop) {
 }
 
 Property_Type GetPropertyType(UProperty* uProp) {
+	if (uProp == NULL) {
+		return Type_Unknown;
+	}
 	for (unsigned int i = 0; i < properties.size(); i++) {
 		Property prop = properties.at(i);
 		if (uProp->IsA(prop.static_class)) {
@@ -181,9 +185,10 @@ void initMemoryLocations() {
 
 
 
-UScriptStruct* findBiggestScriptStruct(string scriptStructName) {
-	unsigned long biggestSize = -1;
-	UScriptStruct* biggestStruct = NULL;
+UScriptStruct* findBiggestScriptStruct(UScriptStruct* ss) {
+	unsigned long biggestSize = ss->PropertySize;
+	UScriptStruct* biggestStruct = ss;
+	string scriptStructName = string(ss->GetFullName());
 	std::vector<UObject*> filteredScriptStruct = filterGObjects([&](UObject* obj) {
 		return obj != NULL && obj->IsA(UScriptStruct::StaticClass()) && string(obj->GetFullName()) == scriptStructName;
 	});
@@ -239,7 +244,7 @@ void getStructs(UScriptStruct* ss, UObject* processPackage) {
 	if (find(structsProcessed.begin(), structsProcessed.end(), scriptStructName) != structsProcessed.end())
 		return;
 
-	ss = findBiggestScriptStruct(scriptStructName);
+	ss = findBiggestScriptStruct(ss);
 
 	if (ss->SuperField != NULL && ss->SuperField != ss && ss->SuperField->IsA(UScriptStruct::StaticClass()))
 	{
@@ -338,7 +343,7 @@ void initProperties() {
 void Run(HMODULE mod) {
 	Log::ReportingLevel() = logDEBUG4;
 	gameModule = mod;
-	initProperties(); //Has to be done here...????
 	initMemoryLocations();
+	initProperties(); //Has to be done here. after GNames and GObjects are found...
 	loadPackages();
 }

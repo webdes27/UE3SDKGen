@@ -2,9 +2,7 @@
 #include "..\stdafx.h"
 #include "UnrealClasses.h"
 
-#ifdef _MSC_VER
-#pragma pack ( push, 0x4 )
-#endif
+
 
 #define GAME_NAME		"Rocket League"
 #define GAME_VERSION	"1.15.0"
@@ -86,7 +84,3 @@
 #define	CPF_PropagateFromStruct		(CPF_Const | CPF_Native | CPF_Transient)
 #define	CPF_PropagateToArrayInner	(CPF_ExportObject | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineNotify | CPF_Localized | CPF_Component)
 
-
-#ifdef _MSC_VER
-#pragma pack ( pop )
-#endif
