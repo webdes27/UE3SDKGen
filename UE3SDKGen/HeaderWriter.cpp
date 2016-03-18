@@ -62,6 +62,7 @@ void HeaderWriter::WriteCode(IndentationWriter &iw, Class c)
 		StructWriter sw;
 		for (unsigned int i = 0; i < c.structs.size(); i++) {
 			sw.WriteCode(iw, c.structs.at(i));
+			iw << endl;
 		}
 		iw << endl;
 	}

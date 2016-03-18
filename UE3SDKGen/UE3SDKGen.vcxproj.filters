@@ -107,5 +107,8 @@
     <ClCompile Include="VariableWriter.cpp">
       <Filter>CodeGenerator</Filter>
     </ClCompile>
+    <ClCompile Include="Code.cpp">
+      <Filter>CodeGenerator</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -42,7 +42,7 @@ struct Function {
 struct Variable {
 	string name;
 	string type;
-	long flags;
+	long flags = 0;
 	int size;
 };
 
@@ -61,3 +61,5 @@ struct Class {
 	vector<Enum> enums;
 	vector<Const> constants;
 };
+extern Variable CreateVariable(string name, string type, long flags, int size);
+

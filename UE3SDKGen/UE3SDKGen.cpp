@@ -74,10 +74,13 @@ Property GetProperty(Property_Type prop) {
 	return GetProperty(Type_Unknown);
 }
 
-Property GetProperty(UProperty* prop) {
+Property GetProperty(UProperty* uProp) {
+	if (uProp == NULL) {
+		return GetProperty(Type_Unknown);
+	}
 	for (unsigned int i = 0; i < properties.size(); i++) {
 		Property tempProp = properties.at(i);
-		if (prop->IsA(tempProp.static_class)) {
+		if (uProp->IsA(tempProp.static_class)) {
 			return tempProp;
 		}
 	}
@@ -220,16 +223,66 @@ void saveStruct(UScriptStruct* scriptStruct) {
 	}
 	sort(propertyList.begin(), propertyList.end(), SortProperty);
 
+
+	map<string, int> propertyMap = { {"UnknownData", 0} };
+	DWORD totalSize = 0;
+	DWORD currentOffset = 0;
+	DWORD offsetDiff = 0;
 	for (unsigned int i = 0; i < propertyList.size(); i++) {
 		UProperty* prop = propertyList.at(i);
+
+		if (prop->Offset > currentOffset) {
+			if ((offsetDiff = prop->Offset - currentOffset) >= CLASS_ALIGN) {
+				Variable var = CreateVariable(
+					string("UnknownData" + to_string(propertyMap["UnknownData"])),
+					string("unsigned char"),
+					(long)(mod_public | mod_array),
+					(int)offsetDiff
+					);
+				s.variables.push_back(var);
+				propertyMap["UnknownData"]++;
+			}
+		}
+
 		Property_Type propType = GetPropertyType(prop);
-		Variable var;
-		var.name = string(prop->GetName());
-		var.size = prop->ArrayDim;
-		var.type = GetPropertyTypeName(prop);
-		var.flags |= mod_public;
-		s.variables.push_back(var);
+		if (propType != Type_Unknown)
+		{
+			Variable var;
+			var.name = string(prop->GetName());
+			var.size = prop->ArrayDim;
+			var.type = GetPropertyTypeName(prop);
+			var.flags |= mod_public;
+			if (var.size > 1) {
+				var.flags |= mod_array;
+			}
+			s.variables.push_back(var);
+		}
+		else {
+			Variable var = CreateVariable(
+				string("UnknownData" + to_string(propertyMap["UnknownData"])),
+				string("unsigned char"),
+				(long)(mod_public | mod_array),
+				(int)(prop->ElementSize * prop->ArrayDim)
+				);
+			s.variables.push_back(var);
+			propertyMap["UnknownData"]++;
+		}
+		currentOffset = prop->Offset + (prop->ElementSize * prop->ArrayDim);
 	}
+
+	if (scriptStruct->PropertySize > currentOffset) {
+		if ((offsetDiff = scriptStruct->PropertySize - currentOffset) >= CLASS_ALIGN) {
+			Variable var = CreateVariable(
+				string("UnknownData" + to_string(propertyMap["UnknownData"])),
+				string("unsigned char"),
+				(long)(mod_public | mod_array),
+				(int)offsetDiff
+				);
+			s.variables.push_back(var);
+			propertyMap["UnknownData"]++;
+		}
+	}
+
 	structsFound.push_back(s);
 }
 
@@ -308,7 +361,7 @@ void loadPackages() {
 
 		DEBUGLOG << "Found package " << package->GetName() << ". Starting processing.";
 		extractStructs(package);
-		CodeWriter cw(package->GetName());
+		CodeWriter cw("Generated/" + string(package->GetName()));
 		Class c;
 		c.structs.insert(c.structs.end(), structsFound.begin(), structsFound.end());
 		cw.AddClass(c);

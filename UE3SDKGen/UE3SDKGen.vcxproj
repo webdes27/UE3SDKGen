@@ -159,6 +159,7 @@
     <ClInclude Include="VariableWriter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code.cpp" />
     <ClCompile Include="CodeWriter.cpp" />
     <ClCompile Include="ConstWriter.cpp" />
     <ClCompile Include="EnumWriter.cpp" />
