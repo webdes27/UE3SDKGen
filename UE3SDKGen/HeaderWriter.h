@@ -1,6 +1,7 @@
 #pragma once
 #include "CodeWriter.h"
-class HeaderWriter
+#include "SingleItemWriter.h"
+class HeaderWriter : public SingleItemWriter<Class>
 {
 public:
 	HeaderWriter();

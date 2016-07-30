@@ -23,10 +23,15 @@ void CodeWriter::AddClass(Class c)
 void CodeWriter::Save()
 {
 	HeaderWriter hw;
+	StructWriter sw;
 
 	ofstream myFile(name, ios_base::out);
 
 	IndentationWriter* iw = new IndentationWriter();
+	for (unsigned int i = 0; i < structs.size(); i++) {
+		sw.WriteCode(*iw, structs.at(i));
+	}
+
 	for (unsigned int i = 0; i < classes.size(); i++) {
 		hw.WriteCode(*iw, classes.at(i));
 	}

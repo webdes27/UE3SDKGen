@@ -1,6 +1,7 @@
 #pragma once
 #include "CodeWriter.h"
-class ConstWriter
+#include "SingleItemWriter.h"
+class ConstWriter : public SingleItemWriter<Const>
 {
 public:
 	ConstWriter();

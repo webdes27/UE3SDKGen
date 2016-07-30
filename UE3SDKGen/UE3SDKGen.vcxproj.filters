@@ -69,6 +69,15 @@
     <ClInclude Include="gamespecific\unrealclasses.h">
       <Filter>Unreal</Filter>
     </ClInclude>
+    <ClInclude Include="SingleItemWriter.h">
+      <Filter>CodeGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="UnrealPropertyGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnrealProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -109,6 +118,15 @@
     </ClCompile>
     <ClCompile Include="Code.cpp">
       <Filter>CodeGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleItemWriter.cpp">
+      <Filter>CodeGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="UnrealPropertyGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnrealProperty.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

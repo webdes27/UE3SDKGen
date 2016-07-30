@@ -12,11 +12,11 @@ private:
 	IndentationWriter iWriter;
 protected:
 	string name;
+public:
 	vector<Class> classes;
 	vector<Struct> structs;
 	vector<Const> consts;
 	vector<Enum> enums;
-public:
 	CodeWriter(string name);
 	~CodeWriter();
 	void AddClass(Class c);

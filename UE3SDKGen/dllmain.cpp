@@ -1,9 +1,11 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
 #include "UE3SDKGen.h"
+#include "GameSpecific\unrealclasses.h"
 
-
-//int main() {
+int main() {
+	int size = sizeof(tempClass);
+	int d = 4;
 //	CodeWriter* cw = new CodeWriter("test.cpp");
 //	Class curClass;
 //	curClass.name = "TestClass";
@@ -33,7 +35,7 @@
 //	cw->AddClass(curClass);
 //	
 //	cw->Save();
-//}
+}
 
 HMODULE module;
 

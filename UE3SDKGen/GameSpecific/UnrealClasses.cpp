@@ -215,6 +215,15 @@ signed int UObject::IsA(class UClass* SomeBase) const
 	return SomeBase == NULL;
 }
 
+signed int UObject::IsOfAny(std::initializer_list<UClass*> classes) const {
+	for (UClass* c : classes) {
+		if (IsA(c)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 UClass*			UObject::pClassPointer = NULL;
 UClass*			UField::pClassPointer = NULL;
 UClass*			UEnum::pClassPointer = NULL;

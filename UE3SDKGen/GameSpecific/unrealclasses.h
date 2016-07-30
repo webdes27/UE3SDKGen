@@ -1,6 +1,8 @@
 #include "..\stdafx.h"
 #pragma once
 
+#include <initializer_list>
+
 #ifdef _MSC_VER
 #pragma pack ( push, 0x4 )
 #endif
@@ -195,6 +197,7 @@ public:
 	static UClass* FindClass(char* ClassFullName);
 
 	signed int UObject::IsA(class UClass* SomeBase) const;
+	signed int IsOfAny(std::initializer_list<UClass*> classes) const;
 
 	static UClass* StaticClass()
 	{
@@ -356,6 +359,57 @@ public:
 	};
 };
 
+// (0x0040 - 0x0080)
+class UProperty : public UField
+{
+public:
+	unsigned long		ArrayDim;									// 0x0040 (0x04)					
+	unsigned long		ElementSize;								// 0x0044 (0x04)
+	QWORD				PropertyFlags;								// 0x0048 (0x08)
+	unsigned long		PropertySize;
+
+	unsigned char		UnknownData00[0xC];						// 0x0050 (0x10) //fname category?
+	unsigned long		Offset;										// 0x0060 (0x04)
+	unsigned char		UnknownData01[0xC];						// 0x0064 (0x1C)
+
+private:
+	static UClass* pClassPointer;
+
+public:
+	static UClass* StaticClass()
+	{
+		if (!pClassPointer)
+			pClassPointer = UObject::FindClass("Class Core.Property");
+
+		return pClassPointer;
+	};
+};
+
+struct FRepRecord
+{
+	UProperty* Property;
+	INT Index;
+};
+
+class FGuid {
+	DWORD A, B, C, D;
+};
+
+class tempClass {
+	DWORD				ClassFlags;
+	INT					ClassUnique;
+	FGuid				ClassGuid;
+	UClass*				ClassWithin;
+	FName				ClassConfigName;
+	TArray<FRepRecord>	ClassReps;
+	TArray<UField*>		NetFields;
+	TArray<FName>		PackageImports;
+	TArray<FName>		HideCategories;
+	TArray<FName>		AutoExpandCategories;
+	TArray<FName>       DependentOn;
+	FString				ClassHeaderFilename;
+};
+
 // (0x00D8 - 0x01D4)
 class UClass : public UState
 {
@@ -387,31 +441,7 @@ public:
 	};
 };
 
-// (0x0040 - 0x0080)
-class UProperty : public UField
-{
-public:
-	unsigned long		ArrayDim;									// 0x0040 (0x04)					
-	unsigned long		ElementSize;								// 0x0044 (0x04)
-	QWORD				PropertyFlags;								// 0x0048 (0x08)
-	unsigned long		PropertySize;
 
-	unsigned char		UnknownData00[0xC];						// 0x0050 (0x10) //fname category?
-	unsigned long		Offset;										// 0x0060 (0x04)
-	unsigned char		UnknownData01[0xC];						// 0x0064 (0x1C)
-
-private:
-	static UClass* pClassPointer;
-
-public:
-	static UClass* StaticClass()
-	{
-		if (!pClassPointer)
-			pClassPointer = UObject::FindClass("Class Core.Property");
-
-		return pClassPointer;
-	};
-};
 
 // (0x0080 - 0x0084)
 class UByteProperty : public UProperty

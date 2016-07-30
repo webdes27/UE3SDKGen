@@ -15,7 +15,7 @@ enum Modifiers {
 	mod_class = 0x100,
 	mod_array = 0x200,
 	mod_pointer = 0x400,
-
+	mod_commented_out = 0x800
 };
 
 struct Const {
@@ -44,6 +44,7 @@ struct Variable {
 	string type;
 	long flags = 0;
 	int size;
+	string comment;
 };
 
 struct Struct {

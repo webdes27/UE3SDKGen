@@ -1,6 +1,8 @@
 #pragma once
 #include "CodeWriter.h"
-class VariableWriter
+#include "SingleItemWriter.h"
+
+class VariableWriter : public SingleItemWriter<Variable>
 {
 public:
 	VariableWriter();

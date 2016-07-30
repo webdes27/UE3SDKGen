@@ -1,6 +1,7 @@
 #pragma once
 #include "CodeWriter.h"
-class StructWriter
+#include "SingleItemWriter.h"
+class StructWriter : SingleItemWriter<Struct>
 {
 public:
 	StructWriter();

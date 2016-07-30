@@ -1,6 +1,7 @@
 #pragma once
 #include "CodeWriter.h"
-class EnumWriter
+#include "SingleItemWriter.h"
+class EnumWriter : public SingleItemWriter<Enum>
 {
 public:
 	EnumWriter();

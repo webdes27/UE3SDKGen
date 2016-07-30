@@ -13,6 +13,9 @@ VariableWriter::~VariableWriter()
 
 void VariableWriter::WriteCode(IndentationWriter & iw, Variable v)
 {
+	if (v.flags & mod_commented_out) {
+		iw << "// ";
+	}
 	if (v.flags & mod_unsigned) {
 		iw << "unsigned ";
 	}
@@ -30,5 +33,9 @@ void VariableWriter::WriteCode(IndentationWriter & iw, Variable v)
 	if (v.flags & mod_array) {
 		iw << "[" << v.size << "]";
 	}
-	iw << ";" << endl;
+	iw << ";";
+	if (!v.comment.empty()) {
+		iw << "// " << v.comment;
+	}
+	iw << endl;
 }
