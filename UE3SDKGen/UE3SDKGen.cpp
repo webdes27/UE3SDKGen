@@ -96,10 +96,10 @@ void saveStruct(UScriptStruct* scriptStruct) {
 	vector< UProperty* > propertyList;
 	for (UProperty* pProperty = (UProperty*)scriptStruct->Children; pProperty; pProperty = (UProperty*)pProperty->Next)
 	{
-		if(pProperty->ElementSize > 0 && !pProperty->IsA(UScriptStruct::StaticClass()))
+		if (pProperty->ElementSize > 0 && !pProperty->IsA(UScriptStruct::StaticClass()))
 			propertyList.push_back(pProperty);
-		else if(pProperty->IsA(UFunction::StaticClass())) 
-
+		else if (pProperty->IsA(UFunction::StaticClass()))
+			continue;
 	}
 	sort(propertyList.begin(), propertyList.end(), SortProperty);
 
@@ -250,7 +250,7 @@ void loadPackages() {
 		DEBUGLOG << "Found package " << package->GetName() << ". Starting processing.";
 		extractStructs(package);
 		extractClasses(package);
-		CodeWriter cw("Generated/" + string(package->GetName()) + "_structs.h");
+		CodeWriter cw("Generated/" + string(package->GetName()));
 		cw.classes.insert(cw.classes.end(), classesFound.begin(), classesFound.end());
 		cw.structs.insert(cw.structs.end(), structsFound.begin(), structsFound.end());
 		cw.Save();

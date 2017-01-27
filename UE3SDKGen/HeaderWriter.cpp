@@ -41,7 +41,7 @@ void WriteVars(IndentationWriter &iw, vector<Variable> vars, char flags, string 
 
 void HeaderWriter::WriteCode(IndentationWriter &iw, Class c)
 {
-	iw << "#pragma once" << endl << endl;
+	//iw << "#pragma once" << endl << endl;
 	if (c.constants.size() > 0) {
 		ConstWriter cw;
 		for (unsigned int i = 0; i < c.constants.size(); i++) {
@@ -76,5 +76,5 @@ void HeaderWriter::WriteCode(IndentationWriter &iw, Class c)
 	WriteVars(iw, c.variables, mod_private, "private");
 	WriteVars(iw, c.variables, mod_protected, "protected");
 	WriteVars(iw, c.variables, mod_public, "public");
-	iw << "}" << endl;
+	iw << "}" << endl << endl;
 }

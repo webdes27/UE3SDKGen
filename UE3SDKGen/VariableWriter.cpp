@@ -29,13 +29,13 @@ void VariableWriter::WriteCode(IndentationWriter & iw, Variable v)
 	if (v.flags & mod_pointer) {
 		iw << "*";
 	}
-	iw << " " << v.name;
+	iw << "\t" << v.name;
 	if (v.flags & mod_array) {
 		iw << "[" << v.size << "]";
 	}
 	iw << ";";
 	if (!v.comment.empty()) {
-		iw << "// " << v.comment;
+		iw << " //" << v.comment;
 	}
 	iw << endl;
 }

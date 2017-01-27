@@ -29,5 +29,5 @@ void StructWriter::WriteCode(IndentationWriter& iw, Struct s)
 		vw.WriteCode(iw, v);
 	}
 	iw.DecIndent();
-	iw << "};" << endl;
+	iw << "};" << endl << endl;
 }

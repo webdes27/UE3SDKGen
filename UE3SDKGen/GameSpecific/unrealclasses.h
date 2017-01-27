@@ -371,6 +371,7 @@ public:
 	unsigned char		UnknownData00[0xC];						// 0x0050 (0x10) //fname category?
 	unsigned long		Offset;										// 0x0060 (0x04)
 	unsigned char		UnknownData01[0xC];						// 0x0064 (0x1C)
+	unsigned char		UnknownData02[0xC];						// 0x0064 (0x1C)
 
 private:
 	static UClass* pClassPointer;

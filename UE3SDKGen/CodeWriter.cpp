@@ -5,9 +5,9 @@
 #include <sstream>
 #include <fstream>
 #include "HeaderWriter.h"
-CodeWriter::CodeWriter(string file)
+CodeWriter::CodeWriter(string path)
 {
-	this->name = file;
+	this->path = path;
 }
 
 CodeWriter::~CodeWriter()
@@ -19,24 +19,29 @@ void CodeWriter::AddClass(Class c)
 	classes.push_back(c);
 }
 
+void CodeWriter::flushToFile(std::string fileName, IndentationWriter* iw)
+{
+	ofstream codeFile(path + fileName, ios_base::out);
+	codeFile << iw->sstream.rdbuf();
+	codeFile.close();
+	iw->sstream.clear();
+}
 
 void CodeWriter::Save()
 {
 	HeaderWriter hw;
 	StructWriter sw;
 
-	ofstream myFile(name, ios_base::out);
-
 	IndentationWriter* iw = new IndentationWriter();
+	iw->WriteLine("#pragma once");
 	for (unsigned int i = 0; i < structs.size(); i++) {
 		sw.WriteCode(*iw, structs.at(i));
 	}
+	flushToFile("_structs.h", iw);
 
+	iw->WriteLine("#pragma once");
 	for (unsigned int i = 0; i < classes.size(); i++) {
 		hw.WriteCode(*iw, classes.at(i));
 	}
-	//string code = iw->GetCode();
-	myFile << iw->sstream.rdbuf();
-
-	myFile.close();
+	flushToFile("_classes.h", iw);
 }

@@ -13,7 +13,7 @@ EnumWriter::~EnumWriter()
 
 void EnumWriter::WriteCode(IndentationWriter & iw, Enum e)
 {
-	iw << "enum " << e.name << endl;
+	iw << "enum" << e.name << endl;
 	iw << "{" << endl;
 	iw.IncIndent();
 	for (unsigned int i = 0; i < e.properties.size(); i++) {

@@ -13,16 +13,18 @@ TArray< UObject* >* UObject::GObjObjects()
 
 char* UObject::GetName()
 {
-	static char cOutBuffer[256];
+	static char nameBuffer[256];
+	if (this->Name.Index < 0)
+		return "NULLNAME";
 
-	sprintf_s(cOutBuffer, "%s", this->Name.GetName());
+	sprintf_s(nameBuffer, "%s", this->Name.GetName());
 
-	return cOutBuffer;
+	return nameBuffer;
 }
 
 char* UObject::GetNameCPP()
 {
-	static char cOutBuffer[256];
+	static char nameBuffer[256];
 
 	if (this->IsA(UClass::StaticClass()))
 	{
@@ -31,12 +33,12 @@ char* UObject::GetNameCPP()
 		{
 			if (!strcmp(pClass->GetName(), "Actor"))
 			{
-				strcpy_s(cOutBuffer, "A");
+				strcpy_s(nameBuffer, "A");
 				break;
 			}
 			else if (!strcmp(pClass->GetName(), "Object"))
 			{
-				strcpy_s(cOutBuffer, "U");
+				strcpy_s(nameBuffer, "U");
 				break;
 			}
 
@@ -45,12 +47,11 @@ char* UObject::GetNameCPP()
 	}
 	else
 	{
-		strcpy_s(cOutBuffer, "F");
+		strcpy_s(nameBuffer, "F");
 	}
 
-	strcat_s(cOutBuffer, this->GetName());
-
-	return cOutBuffer;
+	strcat_s(nameBuffer, this->GetName());
+	return nameBuffer;
 }
 
 char* UObject::GetFullName()
